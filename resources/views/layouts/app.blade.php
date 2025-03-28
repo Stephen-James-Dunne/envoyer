@@ -98,7 +98,7 @@
         .projects-list {
             list-style: none;
             padding: 0;
-            margin: 0;
+            margin-top: 2.25rem;
         }
 
         .projects-list form {
@@ -113,6 +113,12 @@
             border: 1px solid #374151;
             display: block;
             overflow: hidden;
+        }
+
+        .project-name {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .project-item button,

@@ -55,4 +55,17 @@ class EnvoyerController extends Controller
 
         return redirect()->route('all-projects'); // redirect the user to the all-projects route
     }
+
+    public function getDeployment($projectId, $deploymentId)
+    {
+        $project = collect($this->envoyerService->getProjects())
+            ->firstWhere('id', $projectId); // get the project by id
+
+        $deployment = $this->envoyerService->getDeployment($projectId, $deploymentId); // get the deployment by id
+
+        return view('projects.deployment', [
+            'project' => $project,
+            'deployment' => $deployment
+        ]);
+    }
 }

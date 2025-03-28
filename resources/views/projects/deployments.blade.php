@@ -11,22 +11,25 @@
     <div class="container">
         <a href="{{ url('/all-projects') }}" class="back-button">← Back to Projects</a>
 
-        <h1>{{ $project['name'] }} Deployments</h1>
+        <h1 class="project-name">Deployments for {{ $project['name'] }}</h1>
         <span class="help-text">Click a deployment to view more details</span>
 
         <ul class="projects-list">
             @forelse ($deployments as $deployment)
                 <li class="project-item deployment-item">
-                    <div class="deployment-info">
-                        <div>{{ $deployment['commit_message'] }}</div>
-                        <small>{{ $deployment['commit_author'] }} • {{ $deployment['created_at'] }}</small>
-                    </div>
-                    <span class="deployment-status status-{{ $deployment['status'] }}">
-                        {{ ucfirst($deployment['status']) }}
-                    </span>
+                    <a
+                        href="{{ route('deployment', ['projectId' => $project['id'], 'deploymentId' => $deployment['id']]) }}">
+                        <div class="deployment-info">
+                            <div>{{ $deployment['commit_message'] }}</div>
+                            <small>{{ $deployment['commit_author'] }} • {{ $deployment['created_at'] }}</small>
+                        </div>
+                        <span class="deployment-status status-{{ $deployment['status'] }}">
+                            {{ ucfirst($deployment['status']) }}
+                        </span>
+                    </a>
                 </li>
             @empty
-                <li class="project-item">No deployments found</li>
+                <li class="project-item deployment-item">No deployments found for this project</li>
             @endforelse
         </ul>
     </div>

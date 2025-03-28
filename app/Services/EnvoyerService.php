@@ -35,6 +35,11 @@ class EnvoyerService
         ]);
     }
 
+    public function mockingData(): bool
+    {
+        return $this->mocks;
+    }
+
     public function getProjects()
     {
         // Mock data for testing; if mocks is not null, this is returned
@@ -46,14 +51,6 @@ class EnvoyerService
         // Actual API call for non-mock environment
         $response = $this->client->get('projects');
         $data = json_decode($response->getBody()->getContents(), true); // return the projects as an associative array
-
-        // a simpler way to stucture this method is to return the projects directly on the line above,
-        // but I've added this logging below to show the response from the API
-
-        Log::info('Envoyer API Response for Listing All Projects', [
-            'status' => $response->getStatusCode(),
-            'data' => $data
-        ]);
 
         // Check if response has expected structure
         if (!isset($data['projects']) && is_array($data)) {
@@ -81,9 +78,6 @@ class EnvoyerService
             'project_id' => $projectId,
             'data' => $data
         ]);
-
-        // to do: add logging for the response from the API
-        // test API responses in unit tests once this is done
 
         // Check if response has expected structure
         if (!isset($data['deployments']) && is_array($data)) {
@@ -143,6 +137,20 @@ class EnvoyerService
                 'branch' => $branch
             ]
         ]);
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
+    public function getDeployment($projectId, $deploymentId)
+    {
+        // Mock data for testing, if mocks is not null, this is returned
+        if ($this->mocks) {
+            $mockData = require base_path('tests/Fixtures/Envoyer/responses.php');
+            $deployments = $mockData['deployments'][$projectId]['deployments'];
+            return collect($deployments)->firstWhere('id', $deploymentId) ?? [];
+        }
+
+        // Actual API call for non-mock environment
+        $response = $this->client->get("projects/{$projectId}/deployments/{$deploymentId}");
         return json_decode($response->getBody()->getContents(), true);
     }
 }
